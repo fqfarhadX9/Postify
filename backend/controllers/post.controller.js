@@ -85,9 +85,55 @@ const likePost = async (req, res) => {
   }
 };
 
+const commentPost = async (req, res) => {
+  try {
+    const { text } = req.body;
+    const userId = req.user;
+    const postId = req.params.postId;
+
+    if (!text) {
+      return res.status(400).json({
+        success: false,
+        message: "Comment text is required",
+      });
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    const user = await User.findById(userId);
+
+    post.comments.push({
+      user: userId,
+      username: user.username,
+      text,
+    });
+
+    await post.save();
+
+    res.status(200).json({
+      success: true,
+      commentsCount: post.comments.length,
+      comments: post.comments,
+    });
+  } catch (error) {
+     console.error("COMMENT ERROR 👉", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
 
 module.exports = { 
     createPost,
     getFeed,
     likePost,
+    commentPost
 };
