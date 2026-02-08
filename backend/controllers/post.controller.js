@@ -51,7 +51,43 @@ const getFeed = async (req, res) => {
   }
 };
 
+const likePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const userId = req.user;
+
+    const alreadyLiked = post.likes.includes(userId);
+
+    if (alreadyLiked) {
+      post.likes = post.likes.filter(
+        (uid) => uid.toString() !== userId
+      );
+    } else {
+      post.likes.push(userId);
+    }
+
+    await post.save();
+
+    res.status(200).json({
+      success: true,
+      liked: !alreadyLiked,
+      likesCount: post.likes.length,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 module.exports = { 
     createPost,
-    getFeed 
+    getFeed,
+    likePost,
 };
