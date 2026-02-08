@@ -1,11 +1,21 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Feed from "./pages/Feed";
+import Signup from "./pages/signup";
+
 
 function App() {
-
   return (
-    <h1 className="text-3xl font-bold text-center mt-10">
-      Tailwind working 🚀
-    </h1>
-  )
+    <Router>
+      <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/feed" element={<Feed />} />
+    
+        <Route path="*" element={<Login />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

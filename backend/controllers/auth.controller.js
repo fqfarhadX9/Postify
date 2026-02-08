@@ -23,8 +23,6 @@ const signup = async (req, res) => {
       password: hashedPassword,
     });
 
-    generateToken(res, user._id);
-
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -58,10 +56,11 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    generateToken(res, user._id);
+    const token = generateToken(user._id);
 
     res.status(200).json({
       message: "Login successful",
+      token,
       user: {
         id: user._id,
         username: user.username,
