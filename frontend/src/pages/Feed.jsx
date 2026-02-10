@@ -1,51 +1,151 @@
-import { useNavigate } from "react-router-dom";
-import "./Feed.css";
+import { useEffect, useState } from "react";
+import "./feed.css"
 import CreatePost from "../components/CreatePost";
+import Header from "../components/Header";
 
 const Feed = () => {
-  const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
+   const [commentText, setCommentText] = useState("");
+   const [openComments, setOpenComments] = useState(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login", { replace: true });
+  const token = localStorage.getItem("token");
+
+  const handleLike = async (postId) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/post/${postId}/like`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId
+              ? { ...post, likesCount: data.likesCount }
+              : post
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Failed to like post:", error);
+    }
   };
 
+  const handleComment = async (postId, text) => {
+    if (!text) return;
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/post/${postId}/comment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setCommentText("");
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId
+              ? { 
+                 ...post,
+                 comments: data.comments,
+                 commentsCount: data.commentsCount
+                }
+              : post
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Failed to comment:", error);
+    }
+  };
+
+  const fetchFeed = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/post/feed", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (data.success) setPosts(data.posts);
+    } catch (error) {
+      console.error("Failed to fetch feed:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFeed();
+  }, []);
+
   return (
-    <div className="feed-container">
-      <header className="feed-header">
-        <h2>Social</h2>
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
-      </header>
-
-      <CreatePost />
-
-      <div className="posts">
-        <div className="post-card">
-          <div className="post-header">
-            <span className="username">@jarvis</span>
-          </div>
-
-          <p className="post-text">
-            This is my first post 
-          </p>
-
-          <img
-            className="post-image"
-            src="https://via.placeholder.com/400"
-            alt="post"
-          />
-
-          <div className="post-actions">
-            <span>❤️ 3</span>
-            <span>💬 1</span>
-          </div>
-        </div>
-
-        {/*yahan multiple posts map karengee later */}
+    <div className="container">
+       <Header />
+       <CreatePost />
+     {posts.map((post) => (
+      <div key={post._id} className="post-card">
+        <h4>{post.username}</h4>
+        <p>{post.text}</p>
+        {post.image && <img src={post.image} alt="post" />}
+    
+      <div className="post-stats">
+        <span>Likes: {post.likesCount}</span>
+        <span
+          className="comments-count"
+          onClick={() =>
+            setOpenComments(
+              openComments === post._id ? null : post._id
+            )
+          }
+        >
+          Comments: {post.commentsCount}
+        </span>
       </div>
-    </div>
+
+      <button
+        className="like-btn"
+        onClick={() => handleLike(post._id)}
+      >
+        Like
+      </button>
+
+      <button 
+        className="comment-btn"
+         onClick={() => handleComment(post._id, commentText)}
+      >
+        Comment
+      </button>
+      <input 
+        className="comment-input" 
+        placeholder="Write a comment..." 
+        value={commentText} 
+        onChange={(e) => setCommentText(e.target.value)}
+      />
+
+      {openComments === post._id && (
+        <div className="comments-section">
+          {(post.comments || []).map((comment, index) => (
+            <div key={index} className="comment-item">
+              <strong>{comment.username}</strong>
+              <span> {comment.text}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+  </div>
+))}
+
+</div>
+
   );
 };
 

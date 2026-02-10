@@ -35,21 +35,51 @@ const createPost = async (req, res) => {
 };
 
 
+// const getFeed = async (req, res) => {
+//   try {
+//     const posts = await Post.find()
+//       .sort({ createdAt: -1 })
+//       .select("-__v");
+
+//     res.status(200).json({
+//       success: true,
+//       count: posts.length,
+//       posts,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
 const getFeed = async (req, res) => {
   try {
     const posts = await Post.find()
-      .sort({ createdAt: -1 })
-      .select("-__v");
+      .sort({ createdAt: -1 }) 
+      .select("-__v");          
+
+    const formattedPosts = posts.map(post => ({
+      _id: post._id,
+      username: post.username,
+      text: post.text,
+      image: post.image,
+      likesCount: post.likes.length,
+      commentsCount: post.comments.length,
+      comments: post.comments || [],
+      createdAt: post.createdAt,
+    }));
 
     res.status(200).json({
       success: true,
-      count: posts.length,
-      posts,
+      posts: formattedPosts,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
+
 
 const likePost = async (req, res) => {
   try {
@@ -122,7 +152,6 @@ const commentPost = async (req, res) => {
       comments: post.comments,
     });
   } catch (error) {
-     console.error("COMMENT ERROR 👉", error);
     res.status(500).json({
       success: false,
       message: "Server error",

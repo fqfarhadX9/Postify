@@ -1,0 +1,30 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: #4f46e5; /* TaskPlanet inspired */
+  color: white;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.logout-btn {
+  background: white;
+  color: #4f46e5;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #eef2ff;
+}
