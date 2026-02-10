@@ -33,28 +33,9 @@ const createPost = async (req, res) => {
       post,
     });
   } catch (error) {
-    console.error("CREATE POST ERROR 👉", error);
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
-
-// const getFeed = async (req, res) => {
-//   try {
-//     const posts = await Post.find()
-//       .sort({ createdAt: -1 })
-//       .select("-__v");
-
-//     res.status(200).json({
-//       success: true,
-//       count: posts.length,
-//       posts,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
 
 const getFeed = async (req, res) => {
   try {
