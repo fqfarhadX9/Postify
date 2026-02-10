@@ -4,7 +4,6 @@ const cors = require("cors");
 const connectDB = require("./config/db.js");
 const authRoutes = require("./routes/auth.routes.js")
 const userRoutes = require("./routes/user.routes.js")
-const taskRoutes = require("./routes/task.routes.js")
 const postRoutes = require("./routes/post.route.js")
 const cookieParser = require("cookie-parser");
 
@@ -28,7 +27,6 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
-app.use("/api/task", taskRoutes);
 app.use("/api/post", postRoutes);
 
 app.listen(PORT, () => {
