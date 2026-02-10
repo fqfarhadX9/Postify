@@ -1,11 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -13,24 +14,20 @@ function Signup() {
     e.preventDefault();
 
     try {
+      setError("");
+
       const res = await axios.post(
         "http://localhost:5000/api/auth/sign-up",
-        {
-          username,
-          email,
-          password,
-        }
+        { username, email, password }
       );
 
-      console.log(res.data);
-
       localStorage.setItem("token", res.data.token);
-
-      alert("Signup successful");
       navigate("/login");
-    } catch (error) {
-      console.log(error.response?.data || error.message);
-      alert("Signup failed");
+
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Signup failed"
+      );
     }
   };
 
@@ -58,8 +55,15 @@ function Signup() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
+        {error && <p className="error">{error}</p>}
+
         <button>Create Account</button>
       </form>
+
+      <p className="auth-switch">
+        Already have an account?{" "}
+        <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 }

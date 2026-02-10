@@ -3,25 +3,28 @@ const User = require("../models/user.model.js");
 
 const createPost = async (req, res) => {
   try {
-    const { text, image } = req.body;
+    const text = req.body.text;
+    const image = req.file;
 
     if (!text && !image) {
-      return res
-        .status(400)
-        .json({ message: "Post must contain text or image" });
+      return res.status(400).json({
+        message: "Post must have text or image",
+      });
     }
 
     const user = await User.findById(req.user);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        message: "User not found",
+      });
     }
 
     const post = await Post.create({
       text,
-      image,
+      image: image ? `/uploads/${image.filename}` : null,
       user: req.user,
-      username: user.username
+      username: user.username, 
     });
 
     res.status(201).json({
@@ -30,9 +33,11 @@ const createPost = async (req, res) => {
       post,
     });
   } catch (error) {
+    console.error("CREATE POST ERROR 👉", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 // const getFeed = async (req, res) => {

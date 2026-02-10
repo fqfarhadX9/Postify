@@ -10,6 +10,10 @@ const Feed = () => {
 
   const token = localStorage.getItem("token");
 
+  const addNewPost = (newPost) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
+
   const handleLike = async (postId) => {
     try {
       const res = await fetch(`http://localhost:5000/api/post/${postId}/like`, {
@@ -89,12 +93,12 @@ const Feed = () => {
   return (
     <div className="container">
        <Header />
-       <CreatePost />
+       <CreatePost onPostCreated={addNewPost}/>
      {posts.map((post) => (
       <div key={post._id} className="post-card">
         <h4>{post.username}</h4>
         <p>{post.text}</p>
-        {post.image && <img src={post.image} alt="post" />}
+        {post.image && <img src={`http://localhost:5000${post.image}`} alt="post" />}
     
       <div className="post-stats">
         <span>Likes: {post.likesCount}</span>

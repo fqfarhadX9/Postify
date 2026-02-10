@@ -1,52 +1,62 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     try {
+      setError("");
+
       const res = await axios.post(
         "http://localhost:5000/api/auth/log-in",
         { email, password }
       );
 
-      console.log(res.data); 
-
       localStorage.setItem("token", res.data.token);
+      navigate("/feed");
 
-      alert("Login successful!");
-      navigate("/feed")
-
-    } catch (error) {
-      console.log(error.response?.data || error.message);
-      alert("Login failed");
+    } catch (err) {
+      setError(
+        "Invalid email or password"
+      );
     }
   };
 
   return (
     <div className="auth-box">
       <h3>Login</h3>
+
       <form onSubmit={handleLogin}>
         <input
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        {error && <p className="error">{error}</p>}
+
         <button>Login</button>
       </form>
+
+      <p className="auth-switch">
+        Don’t have an account?{" "}
+        <Link to="/signup">Sign up</Link>
+      </p>
     </div>
   );
 }

@@ -45,6 +45,19 @@ body {
   background-color: #3730a3;
 }
 
+.auth-switch {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.auth-switch a {
+  color: #4f46e5; 
+  font-weight: 500;
+  text-decoration: none;
+}
+
+
 @media (min-width: 600px) {
   .auth-box {
     max-width: 350px;

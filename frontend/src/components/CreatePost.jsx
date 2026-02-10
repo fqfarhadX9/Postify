@@ -1,9 +1,9 @@
 import { useState } from "react";
 import "./CreatePost.css";
 
-const CreatePost = () => {
+const CreatePost = ({ onPostCreated }) => {
   const [text, setText] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null); 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -21,15 +21,20 @@ const CreatePost = () => {
 
       const token = localStorage.getItem("token");
 
+      const formData = new FormData();
+      formData.append("text", text);
+      if (image) {
+        formData.append("image", image);
+      }
+
       const res = await fetch(
         "http://localhost:5000/api/post/create",
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, 
           },
-          body: JSON.stringify({ text, image }),
+          body: formData, 
         }
       );
 
@@ -40,9 +45,9 @@ const CreatePost = () => {
       }
 
       setText("");
-      setImage("");
-      console.log("Post created 👉", data);
-      
+      setImage(null);
+      onPostCreated(data.post);
+
     } catch (err) {
       setError(err.message);
     } finally {
@@ -60,10 +65,9 @@ const CreatePost = () => {
         />
 
         <input
-          type="text"
-          placeholder="Image URL (optional)"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
         />
 
         {error && <p className="error">{error}</p>}
