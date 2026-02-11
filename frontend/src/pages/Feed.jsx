@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./feed.css"
+import "./Feed.css"
 import CreatePost from "../components/CreatePost";
 import Header from "../components/Header";
 
