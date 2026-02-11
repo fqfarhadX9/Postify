@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useRef } from "react";
+
 import "./CreatePost.css";
 
 const CreatePost = ({ onPostCreated }) => {
@@ -7,8 +9,10 @@ const CreatePost = ({ onPostCreated }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const fileInputRef = useRef(null);
+
+
   const API_URL = import.meta.env.VITE_API_URL;
-  console.log(import.meta.env.VITE_API_URL);
 
 
   const handleSubmit = async (e) => {
@@ -49,6 +53,10 @@ const CreatePost = ({ onPostCreated }) => {
 
       setText("");
       setImage(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
       onPostCreated(data.post);
 
     } catch (err) {
@@ -70,6 +78,7 @@ const CreatePost = ({ onPostCreated }) => {
         <input
           type="file"
           accept="image/*"
+          ref={fileInputRef}
           onChange={(e) => setImage(e.target.files[0])}
         />
 
