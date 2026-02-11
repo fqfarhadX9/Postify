@@ -6,6 +6,8 @@ const authRoutes = require("./routes/auth.routes.js")
 const userRoutes = require("./routes/user.routes.js")
 const postRoutes = require("./routes/post.route.js")
 const cookieParser = require("cookie-parser");
+const fs = require("fs");
+const path = require("path");
 
 const PORT = process.env.PORT || 5000;
 
@@ -13,6 +15,13 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+const uploadPath = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+  console.log("Uploads folder created");
+}
 
 app.use(
   cors({
