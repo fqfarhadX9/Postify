@@ -74,8 +74,6 @@ const Feed = () => {
 
   const fetchFeed = async () => {
     try {
-      console.log("API URL 👉", import.meta.env.VITE_API_URL);
-
       const res = await fetch(`${API_URL}/api/post/feed`, {
         headers: {
           Authorization: `Bearer ${token}`,
