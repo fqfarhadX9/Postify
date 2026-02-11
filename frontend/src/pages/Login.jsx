@@ -8,6 +8,7 @@ function Login() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,7 +17,7 @@ function Login() {
       setError("");
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/log-in",
+        `${API_URL}/api/auth/log-in`,
         { email, password }
       );
 
@@ -24,6 +25,7 @@ function Login() {
       navigate("/feed");
 
     } catch (err) {
+      console.log(err);
       setError(
         "Invalid email or password"
       );

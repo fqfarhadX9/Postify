@@ -9,6 +9,7 @@ const Feed = () => {
    const [openComments, setOpenComments] = useState(null);
 
   const token = localStorage.getItem("token");
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const addNewPost = (newPost) => {
     setPosts((prevPosts) => [newPost, ...prevPosts]);
@@ -16,7 +17,7 @@ const Feed = () => {
 
   const handleLike = async (postId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/post/${postId}/like`, {
+      const res = await fetch(`${API_URL}/api/post/${postId}/like`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -42,7 +43,7 @@ const Feed = () => {
     if (!text) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/post/${postId}/comment`, {
+      const res = await fetch(`${API_URL}/api/post/${postId}/comment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +74,9 @@ const Feed = () => {
 
   const fetchFeed = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/post/feed", {
+      console.log("API URL 👉", import.meta.env.VITE_API_URL);
+
+      const res = await fetch(`${API_URL}/api/post/feed`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -98,7 +101,7 @@ const Feed = () => {
       <div key={post._id} className="post-card">
         <h4>{post.username}</h4>
         <p>{post.text}</p>
-        {post.image && <img src={`http://localhost:5000${post.image}`} alt="post" />}
+        {post.image && <img src={`${API_URL}${post.image}`} alt="post" />}
     
       <div className="post-stats">
         <span>Likes: {post.likesCount}</span>

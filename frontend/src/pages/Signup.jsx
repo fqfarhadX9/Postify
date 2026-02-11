@@ -9,6 +9,7 @@ function Signup() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -17,7 +18,7 @@ function Signup() {
       setError("");
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/sign-up",
+        `${API_URL}/api/auth/sign-up`,
         { username, email, password }
       );
 

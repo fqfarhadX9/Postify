@@ -7,6 +7,8 @@ const CreatePost = ({ onPostCreated }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -28,8 +30,7 @@ const CreatePost = ({ onPostCreated }) => {
       }
 
       const res = await fetch(
-        "http://localhost:5000/api/post/create",
-        {
+       `${API_URL}/api/post/create`,        {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`, 
